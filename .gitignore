@@ -4,42 +4,63 @@ vendor/
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.python-version
+.env
+.env.*
 
 # Build outputs
 dist/
 build/
 out/
-*.egg-info/
-
-# Environment & secrets
-.env
-.env.local
-.env.*.local
-*.pem
-*.key
+coverage/
+.nyc_output/
+*.log
+*.cache
 
 # IDE & editor
 .vscode/
 .idea/
+*.sublime-workspace
+*.sublime-project
 *.swp
 *.swo
 .DS_Store
 Thumbs.db
 
-# Logs
-logs/
-*.log
-npm-debug.log*
-
 # Docker
 docker-compose.override.yml
+**/docker-compose.override.yml
 
-# Coverage
-coverage/
-.nyc_output/
+# System files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Temp
+# Temporary files
 tmp/
 temp/
 *.tmp
 *.bak
+
+# Logs
+logs/
+*.log
+
+# OS generated files
+ehthumbs.db
+Icon?
+
+# Optional environment
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
