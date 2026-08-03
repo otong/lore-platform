@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Modules\Organization\Domain\Contracts\OrganizationRepositoryInterface;
+use App\Modules\Organization\Infrastructure\Persistence\Repositories\OrganizationRepository;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(OrganizationRepositoryInterface::class, OrganizationRepository::class);
     }
 
     /**
