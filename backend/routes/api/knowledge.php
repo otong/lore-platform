@@ -4,6 +4,7 @@ use App\Modules\Knowledge\Presentation\Http\Controllers\AttachmentController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\CategoryController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\KnowledgeAttachmentController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\KnowledgeController;
+use App\Modules\Knowledge\Presentation\Http\Controllers\KnowledgeSearchController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\OrganizationCategoryController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\OrganizationKnowledgeController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/categories/{uuid}', [CategoryController::class, 'show'])->name('api.v1.knowledge.categories.show');
     Route::patch('/categories/{uuid}', [CategoryController::class, 'update'])->name('api.v1.knowledge.categories.update');
     Route::delete('/categories/{uuid}', [CategoryController::class, 'destroy'])->name('api.v1.knowledge.categories.destroy');
+
+    // Search Endpoints (Sprint-010)
+    Route::get('/organizations/{orgUuid}/knowledges/search', [KnowledgeSearchController::class, 'search'])->name('api.v1.knowledge.articles.search');
+    Route::get('/organizations/{orgUuid}/knowledges/recent', [KnowledgeSearchController::class, 'recent'])->name('api.v1.knowledge.articles.recent');
+    Route::get('/organizations/{orgUuid}/knowledges/popular', [KnowledgeSearchController::class, 'popular'])->name('api.v1.knowledge.articles.popular');
 
     // Knowledge Article Endpoints
     Route::get('/organizations/{orgUuid}/knowledges', [OrganizationKnowledgeController::class, 'index'])->name('api.v1.knowledge.articles.index');

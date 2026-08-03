@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Modules\Knowledge\Domain\Contracts\KnowledgeRepositoryInterface;
+use App\Modules\Knowledge\Domain\Contracts\KnowledgeSearchInterface;
 use App\Modules\Knowledge\Infrastructure\Persistence\Repositories\KnowledgeRepository;
+use App\Modules\Knowledge\Infrastructure\Search\Engines\DatabaseSearchEngine;
 use App\Modules\Knowledge\Infrastructure\Security\Contracts\AntivirusScannerInterface;
 use App\Modules\Knowledge\Infrastructure\Security\Scanners\NullAntivirusScanner;
 use App\Modules\Organization\Domain\Contracts\OrganizationRepositoryInterface;
@@ -24,6 +26,12 @@ class AppServiceProvider extends ServiceProvider
             AntivirusScannerInterface::class,
             NullAntivirusScanner::class
         );
+        $this->app->bind(KnowledgeSearchInterface::class, function ($app) {
+            $driverKey = config('knowledge.search.default_driver', 'database');
+            $driverClass = config("knowledge.search.drivers.{$driverKey}", DatabaseSearchEngine::class);
+
+            return $app->make($driverClass);
+        });
     }
 
     /**

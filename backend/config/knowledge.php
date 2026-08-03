@@ -1,5 +1,11 @@
 <?php
 
+use App\Modules\Knowledge\Infrastructure\Search\Engines\DatabaseSearchEngine;
+use App\Modules\Knowledge\Infrastructure\Search\Engines\ElasticSearchEngine;
+use App\Modules\Knowledge\Infrastructure\Search\Engines\MeilisearchEngine;
+use App\Modules\Knowledge\Infrastructure\Search\Engines\OpenSearchEngine;
+use App\Modules\Knowledge\Infrastructure\Search\Engines\VectorSearchEngine;
+
 return [
     'attachments' => [
         'default_disk' => env('KNOWLEDGE_ATTACHMENT_DISK', 'local'),
@@ -22,5 +28,16 @@ return [
     'antivirus' => [
         'enabled' => env('KNOWLEDGE_ANTIVIRUS_ENABLED', false),
         'driver' => env('KNOWLEDGE_ANTIVIRUS_DRIVER', 'null'),
+    ],
+
+    'search' => [
+        'default_driver' => env('KNOWLEDGE_SEARCH_DRIVER', 'database'),
+        'drivers' => [
+            'database' => DatabaseSearchEngine::class,
+            'meilisearch' => MeilisearchEngine::class,
+            'elasticsearch' => ElasticSearchEngine::class,
+            'opensearch' => OpenSearchEngine::class,
+            'vector' => VectorSearchEngine::class,
+        ],
     ],
 ];
