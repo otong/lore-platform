@@ -1,6 +1,8 @@
 <?php
 
+use App\Modules\Knowledge\Presentation\Http\Controllers\AttachmentController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\CategoryController;
+use App\Modules\Knowledge\Presentation\Http\Controllers\KnowledgeAttachmentController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\KnowledgeController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\OrganizationCategoryController;
 use App\Modules\Knowledge\Presentation\Http\Controllers\OrganizationKnowledgeController;
@@ -24,4 +26,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/knowledges/{uuid}/archive', [KnowledgeController::class, 'archive'])->name('api.v1.knowledge.articles.archive');
     Route::post('/knowledges/{uuid}/tags', [KnowledgeController::class, 'syncTags'])->name('api.v1.knowledge.articles.tags.sync');
     Route::post('/knowledges/{uuid}/attachments', [KnowledgeController::class, 'addAttachment'])->name('api.v1.knowledge.articles.attachments.store');
+
+    // Attachment Subsystem Endpoints (Sprint-009)
+    Route::post('/knowledges/{uuid}/attachments/upload', [KnowledgeAttachmentController::class, 'upload'])->name('api.v1.knowledge.articles.attachments.upload');
+    Route::get('/attachments/{uuid}/download', [AttachmentController::class, 'download'])->name('api.v1.knowledge.attachments.download');
+    Route::post('/attachments/{uuid}/temporary-link', [AttachmentController::class, 'temporaryLink'])->name('api.v1.knowledge.attachments.temporary_link');
+    Route::delete('/attachments/{uuid}', [AttachmentController::class, 'destroy'])->name('api.v1.knowledge.attachments.destroy');
 });

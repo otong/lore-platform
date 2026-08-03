@@ -48,4 +48,8 @@ interface KnowledgeRepositoryInterface
     public function syncTags(Knowledge $knowledge, array $tagIds): void;
 
     public function addAttachment(Knowledge $knowledge, array $data): Attachment;
+
+    public function findAttachmentByUuid(string $uuid): ?Attachment;
+
+    public function deleteAttachment(int $id): bool;
 }

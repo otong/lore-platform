@@ -18,12 +18,15 @@ class AttachmentResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'file_name' => $this->file_name,
-            'disk' => $this->disk,
-            'path' => $this->path,
-            'checksum' => $this->checksum,
+            'storage_disk' => $this->disk,
+            'storage_provider' => $this->disk ?? 'local',
+            'storage_path' => $this->path,
+            'checksum_sha256' => $this->checksum,
             'mime_type' => $this->mime_type,
             'file_size' => $this->file_size,
-            'created_at' => $this->created_at?->toISOString(),
+            'visibility' => 'private',
+            'uploaded_at' => $this->created_at?->toISOString(),
+            'deleted_from_storage_at' => null,
         ];
     }
 }

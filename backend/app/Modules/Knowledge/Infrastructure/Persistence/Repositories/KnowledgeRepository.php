@@ -158,4 +158,18 @@ class KnowledgeRepository implements KnowledgeRepositoryInterface
 
         return $knowledge->attachments()->create($data);
     }
+
+    public function findAttachmentByUuid(string $uuid): ?Attachment
+    {
+        return Attachment::with('knowledge.category')
+            ->where('uuid', $uuid)
+            ->first();
+    }
+
+    public function deleteAttachment(int $id): bool
+    {
+        $attachment = Attachment::find($id);
+
+        return $attachment ? (bool) $attachment->delete() : false;
+    }
 }
