@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Modules\Knowledge\Domain\Contracts\KnowledgeRepositoryInterface;
+use App\Modules\Knowledge\Infrastructure\Persistence\Repositories\KnowledgeRepository;
 use App\Modules\Organization\Domain\Contracts\OrganizationRepositoryInterface;
 use App\Modules\Organization\Infrastructure\Persistence\Repositories\OrganizationRepository;
 use Illuminate\Support\Facades\Gate;
@@ -15,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(OrganizationRepositoryInterface::class, OrganizationRepository::class);
+        $this->app->bind(KnowledgeRepositoryInterface::class, KnowledgeRepository::class);
     }
 
     /**
