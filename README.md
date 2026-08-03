@@ -6,6 +6,17 @@ LORE is an enterprise-grade platform for Learning, Operation, Regulation, and En
 
 LORE is designed to serve regulated and enterprise environments with a modular architecture that separates backend services, frontend applications, documentation, automation, and tooling.
 
+## Architecture Overview
+
+The Laravel 12 backend is designed to evolve as a Modular Monolith. Each business domain owns its application use cases, domain rules, infrastructure adapters, and presentation adapters. Cross-module database access is strictly prohibited; modules communicate via Services, Contracts, Events, or internal APIs. The architecture also establishes foundational AI Readiness (AI Gateway, Prompt Layer, RAG Knowledge Layer, Tool Calling, and LLM Independence). This Sprint 002 baseline establishes architecture documentation only and introduces no executable runtime code.
+
+Architecture references:
+
+- [Backend architecture](docs/architecture/backend-architecture.md)
+- [Module structure](docs/architecture/module-structure.md)
+- [API guidelines](docs/architecture/api-guidelines.md)
+- [Coding conventions](docs/architecture/coding-conventions.md)
+
 ## Vision
 
 To build a reliable, extensible enterprise platform that enables organizations to manage learning, operations, and regulatory workflows while supporting future expansion into analytics, automation, and distributed operations.
@@ -68,6 +79,7 @@ LORE/
 - Write clear commit messages following a conventional style.
 - Separate infrastructure, automation, and application code into dedicated folders.
 - Track architectural decisions in `docs/adr/`.
+- Follow the module boundaries and layering conventions in `docs/architecture/` when business implementation begins.
 
 ## Future Roadmap
 
