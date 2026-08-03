@@ -43,6 +43,19 @@ class RepositoryTest extends TestCase
         $this->assertDatabaseHas('knowledges', ['id' => $knowledge->id, 'slug' => 'auth-guide']);
     }
 
+    public function test_can_find_category_by_uuid(): void
+    {
+        $category = $this->repository->createCategory([
+            'organization_id' => 1,
+            'name' => 'Dev Guidelines',
+            'slug' => 'dev-guidelines',
+        ]);
+
+        $found = $this->repository->findCategoryByUuid($category->uuid);
+        $this->assertNotNull($found);
+        $this->assertEquals($category->id, $found->id);
+    }
+
     public function test_can_sync_tags_and_add_attachment(): void
     {
         $knowledge = $this->repository->createKnowledge([
@@ -90,10 +103,27 @@ class RepositoryTest extends TestCase
             'author_id' => 1,
         ]);
 
-        $knowledge->delete();
-        $category->delete();
+        $this->repository->deleteKnowledge($knowledge->id);
+        $this->repository->deleteCategory($category->id);
 
         $this->assertSoftDeleted('knowledges', ['id' => $knowledge->id]);
         $this->assertSoftDeleted('categories', ['id' => $category->id]);
+    }
+
+    public function test_can_get_knowledges_paginated(): void
+    {
+        for ($i = 1; $i <= 5; $i++) {
+            $this->repository->createKnowledge([
+                'organization_id' => 1,
+                'title' => "Article {$i}",
+                'slug' => "article-{$i}",
+                'content' => "Content {$i}",
+                'author_id' => 1,
+            ]);
+        }
+
+        $paginated = $this->repository->getKnowledgesByOrganizationPaginated(1, 3);
+        $this->assertEquals(5, $paginated->total());
+        $this->assertEquals(3, count($paginated->items()));
     }
 }

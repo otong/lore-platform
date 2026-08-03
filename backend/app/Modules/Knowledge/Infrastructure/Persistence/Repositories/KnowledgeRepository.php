@@ -9,6 +9,7 @@ use App\Modules\Knowledge\Infrastructure\Persistence\Models\Attachment;
 use App\Modules\Knowledge\Infrastructure\Persistence\Models\Category;
 use App\Modules\Knowledge\Infrastructure\Persistence\Models\Knowledge;
 use App\Modules\Knowledge\Infrastructure\Persistence\Models\Tag;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
@@ -35,9 +36,23 @@ class KnowledgeRepository implements KnowledgeRepositoryInterface
         return $category;
     }
 
+    public function deleteCategory(int $id): bool
+    {
+        $category = Category::find($id);
+
+        return $category ? (bool) $category->delete() : false;
+    }
+
     public function findCategoryById(int $id): ?Category
     {
         return Category::with(['parent', 'children'])->find($id);
+    }
+
+    public function findCategoryByUuid(string $uuid): ?Category
+    {
+        return Category::with(['parent', 'children'])
+            ->where('uuid', $uuid)
+            ->first();
     }
 
     public function findCategoryBySlug(int $organizationId, string $slug): ?Category
@@ -73,6 +88,13 @@ class KnowledgeRepository implements KnowledgeRepositoryInterface
         return $knowledge;
     }
 
+    public function deleteKnowledge(int $id): bool
+    {
+        $knowledge = Knowledge::find($id);
+
+        return $knowledge ? (bool) $knowledge->delete() : false;
+    }
+
     public function findKnowledgeById(int $id): ?Knowledge
     {
         return Knowledge::with(['category', 'tags', 'attachments'])->find($id);
@@ -98,6 +120,13 @@ class KnowledgeRepository implements KnowledgeRepositoryInterface
         return Knowledge::with(['category', 'tags', 'attachments'])
             ->where('organization_id', $organizationId)
             ->get();
+    }
+
+    public function getKnowledgesByOrganizationPaginated(int $organizationId, int $perPage = 15): LengthAwarePaginator
+    {
+        return Knowledge::with(['category', 'tags', 'attachments'])
+            ->where('organization_id', $organizationId)
+            ->paginate($perPage);
     }
 
     public function findOrCreateTag(int $organizationId, string $name): Tag

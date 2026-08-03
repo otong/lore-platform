@@ -34,7 +34,7 @@ class ServiceTest extends TestCase
         $this->assertEquals('Engineering Handbook', $category->name);
 
         $knowledge = $this->service->createKnowledge(1, 100, [
-            'category_id' => $category->id,
+            'category_uuid' => $category->uuid,
             'title' => 'Coding Standards',
             'slug' => 'coding-standards',
             'content' => 'Follow PSR-12 conventions.',
@@ -42,6 +42,33 @@ class ServiceTest extends TestCase
 
         $this->assertEquals('draft', $knowledge->status);
         $this->assertEquals(100, $knowledge->author_id);
+        $this->assertEquals($category->id, $knowledge->category_id);
+    }
+
+    public function test_service_resolves_and_deletes_category_and_knowledge_by_uuid(): void
+    {
+        $category = $this->service->createCategory(1, [
+            'name' => 'Dev Category',
+            'slug' => 'dev-cat',
+        ]);
+
+        $knowledge = $this->service->createKnowledge(1, 10, [
+            'title' => 'Dev Guide',
+            'slug' => 'dev-guide',
+            'content' => 'Dev guide content',
+        ]);
+
+        $fetchedCat = $this->service->getCategoryByUuid($category->uuid);
+        $this->assertNotNull($fetchedCat);
+
+        $fetchedKnowledge = $this->service->getKnowledgeByUuid($knowledge->uuid);
+        $this->assertNotNull($fetchedKnowledge);
+
+        $this->assertTrue($this->service->deleteKnowledge($knowledge->uuid));
+        $this->assertTrue($this->service->deleteCategory($category->uuid));
+
+        $this->assertSoftDeleted('knowledges', ['id' => $knowledge->id]);
+        $this->assertSoftDeleted('categories', ['id' => $category->id]);
     }
 
     public function test_service_enforces_organization_scoped_slug_uniqueness(): void
@@ -66,7 +93,7 @@ class ServiceTest extends TestCase
         ]);
     }
 
-    public function test_service_publishes_and_archives_knowledge(): void
+    public function test_service_publishes_archives_and_syncs_tags_by_uuid(): void
     {
         $knowledge = $this->service->createKnowledge(1, 100, [
             'title' => 'Release Notes',
@@ -74,11 +101,14 @@ class ServiceTest extends TestCase
             'content' => 'v1.0.0 released.',
         ]);
 
-        $published = $this->service->publishKnowledge($knowledge->id);
+        $published = $this->service->publishKnowledge($knowledge->uuid);
         $this->assertEquals('published', $published->status);
         $this->assertNotNull($published->published_at);
 
-        $archived = $this->service->archiveKnowledge($knowledge->id);
+        $archived = $this->service->archiveKnowledge($knowledge->uuid);
         $this->assertEquals('archived', $archived->status);
+
+        $synced = $this->service->syncTags($knowledge->uuid, ['Release', 'v1.0']);
+        $this->assertCount(2, $synced->tags);
     }
 }

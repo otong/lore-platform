@@ -8,6 +8,7 @@ use App\Modules\Knowledge\Infrastructure\Persistence\Models\Attachment;
 use App\Modules\Knowledge\Infrastructure\Persistence\Models\Category;
 use App\Modules\Knowledge\Infrastructure\Persistence\Models\Knowledge;
 use App\Modules\Knowledge\Infrastructure\Persistence\Models\Tag;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 interface KnowledgeRepositoryInterface
@@ -16,7 +17,11 @@ interface KnowledgeRepositoryInterface
 
     public function updateCategory(int $id, array $data): Category;
 
+    public function deleteCategory(int $id): bool;
+
     public function findCategoryById(int $id): ?Category;
+
+    public function findCategoryByUuid(string $uuid): ?Category;
 
     public function findCategoryBySlug(int $organizationId, string $slug): ?Category;
 
@@ -26,6 +31,8 @@ interface KnowledgeRepositoryInterface
 
     public function updateKnowledge(int $id, array $data): Knowledge;
 
+    public function deleteKnowledge(int $id): bool;
+
     public function findKnowledgeById(int $id): ?Knowledge;
 
     public function findKnowledgeByUuid(string $uuid): ?Knowledge;
@@ -33,6 +40,8 @@ interface KnowledgeRepositoryInterface
     public function findKnowledgeBySlug(int $organizationId, string $slug): ?Knowledge;
 
     public function getKnowledgesByOrganization(int $organizationId): Collection;
+
+    public function getKnowledgesByOrganizationPaginated(int $organizationId, int $perPage = 15): LengthAwarePaginator;
 
     public function findOrCreateTag(int $organizationId, string $name): Tag;
 
